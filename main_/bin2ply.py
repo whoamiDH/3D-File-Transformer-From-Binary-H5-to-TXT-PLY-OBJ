@@ -5,34 +5,34 @@ import struct
 import numpy as np
 from google.colab import files
 
-# ÆÄÀÏ ¾÷·Îµå
+# íŒŒì¼ ì—…ë¡œë“œ
 uploaded = files.upload()
 
-# ¾÷·ÎµåµÈ ÆÄÀÏ ÀÌ¸§ °¡Á®¿À±â
+# ì—…ë¡œë“œëœ íŒŒì¼ ì´ë¦„ ê°€ì ¸ì˜¤ê¸°
 for file_name in uploaded.keys():
     input_file_path = file_name
 
-# ¹ÙÀÌ³Ê¸® ÆÄÀÏ ÀĞ±â
+# ë°”ì´ë„ˆë¦¬ íŒŒì¼ ì½ê¸°
 with open(input_file_path, 'rb') as f:
     data = f.read()
 
-# Ã¹ ¹øÂ° float °ªÀº ÃÑ Æ÷ÀÎÆ® ¼ö
+# ì²« ë²ˆì§¸ float ê°’ì€ ì´ í¬ì¸íŠ¸ ìˆ˜
 num_points = struct.unpack('f', data[:4])[0]
 
-# ³ª¸ÓÁö µ¥ÀÌÅÍ´Â °¢ Æ÷ÀÎÆ®ÀÇ ¼Ó¼º (°¢ Æ÷ÀÎÆ®´ç 11°³ÀÇ float °ª)
+# ë‚˜ë¨¸ì§€ ë°ì´í„°ëŠ” ê° í¬ì¸íŠ¸ì˜ ì†ì„± (ê° í¬ì¸íŠ¸ë‹¹ 11ê°œì˜ float ê°’)
 point_data = data[4:]
 
-# ¸ğµç Æ÷ÀÎÆ® µ¥ÀÌÅÍ¸¦ ¾ğÆÑÇÏ¿© ¹è¿­·Î º¯È¯
+# ëª¨ë“  í¬ì¸íŠ¸ ë°ì´í„°ë¥¼ ì–¸íŒ©í•˜ì—¬ ë°°ì—´ë¡œ ë³€í™˜
 points = struct.unpack('f' * int(num_points) * 11, point_data)
 
-# numpy ¹è¿­·Î º¯È¯
+# numpy ë°°ì—´ë¡œ ë³€í™˜
 points = np.array(points).reshape(-1, 11)
 
-# PLY ÆÄÀÏ·Î ÀúÀå
+# PLY íŒŒì¼ë¡œ ì €ì¥
 output_ply_file = input_file_path.replace('.bin', '.ply')
 
 with open(output_ply_file, 'w') as file:
-    # Çì´õ ÀÛ¼º
+    # í—¤ë” ì‘ì„±
     file.write("ply\n")
     file.write("format ascii 1.0\n")
     file.write(f"element vertex {int(num_points)}\n")
@@ -48,10 +48,10 @@ with open(output_ply_file, 'w') as file:
     file.write("property int instance_label\n")
     file.write("property int semantic_label\n")
     file.write("end_header\n")
-    # µ¥ÀÌÅÍ ÀÛ¼º
+    # ë°ì´í„° ì‘ì„±
     for point in points:
         x, y, z, nx, ny, nz, r, g, b, instance_label, semantic_label = point
         file.write(f"{x} {y} {z} {nx} {ny} {nz} {int(r)} {int(g)} {int(b)} {int(instance_label)} {int(semantic_label)}\n")
 
-# º¯È¯µÈ PLY ÆÄÀÏ ´Ù¿î·Îµå ¸µÅ© Á¦°ø
+# ë³€í™˜ëœ PLY íŒŒì¼ ë‹¤ìš´ë¡œë“œ ë§í¬ ì œê³µ
 files.download(output_ply_file)
